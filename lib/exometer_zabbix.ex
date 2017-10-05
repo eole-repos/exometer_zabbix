@@ -35,7 +35,7 @@ defmodule Exometer.Report.Zabbix do
     port = Keyword.get(opts, :port, @port)
     timestamping = Keyword.get(opts, :timestamping, @timestamping)
     batch_window_size = Keyword.get(opts, :batch_window_size, @batch_window_size)
-    hostname = Keyword.get(opts, :hostname, "")
+    hostname = Keyword.get(opts, :hostname, get_hostname())
 
     {:ok, %__MODULE__{  host: host,
                         port: port,
@@ -151,4 +151,15 @@ defmodule Exometer.Report.Zabbix do
     :gen_tcp.close sock
   end
 
+  defp get_hostname() do
+    cmd_path = System.find_executable("hostname")
+    if cmd_path do
+      case System.cmd(cmd_path, []) do
+        {hostname, 0} -> hostname
+        _ -> ""
+      end
+    else
+      ""
+    end
+  end
 end
