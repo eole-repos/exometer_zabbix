@@ -155,7 +155,7 @@ defmodule Exometer.Report.Zabbix do
     cmd_path = System.find_executable("hostname")
     if cmd_path do
       case System.cmd(cmd_path, []) do
-        {hostname, 0} -> hostname
+        {hostname, 0} -> hostname |> String.replace("\n", "")
         _ -> ""
       end
     else
